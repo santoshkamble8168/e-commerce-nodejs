@@ -10,6 +10,24 @@ module.exports = (err, req, res, next) => {
         err = new ErrorHander(message, 400)
     }
 
+    //mongodb duplicate key error handle
+    if (err.code === 11000) {
+        const message = `${Object.keys(err.keyValue)} already exists`
+        err = new ErrorHander(message, 409)
+    }
+
+    //handle wrong JWT token
+    if (err.name === "JsonWebTokenEror") {
+        const message = "Invalid token, please try again"
+        err = new ErrorHander(message, 401)
+    }
+
+    //handle JWT token expire
+    if (err.name === "TokenExpiredError") {
+        const message = "Token is expired"
+        err = new ErrorHander(message, 401)
+    }
+
     res.status(err.statusCode).json({
         success: false,
         message: err.message

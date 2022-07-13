@@ -2,10 +2,11 @@ const Product = require("../models/productModel")
 const ErrorHander = require("../utils/errorHandler")
 const handleAsyncErrors = require("../middlewares/handleAsyncErrors")
 const HandleQueries = require("../utils/handleQueries")
-const { count } = require("../models/productModel")
 
 //Create new product
 exports.createProduct = handleAsyncErrors(async (req, res, next) => {
+    req.body.createdBy = req.user.id //loggedin user set as created by
+
     const product = await Product.create(req.body)
     res.status(201).json({
         success: true,
@@ -29,7 +30,7 @@ exports.getAllProducts = handleAsyncErrors(async (req, res,next) => {
     })
 })
 
-//update product
+//get single product/ product details
 exports.getProductDetails = handleAsyncErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id)
     if (!product) {
@@ -62,6 +63,7 @@ exports.updateProduct = handleAsyncErrors(async (req, res, next) => {
     })
 }) 
 
+//delete product
 exports.deleteProduct =handleAsyncErrors(async (req, res, next) => {
     let product = await Product.findById(req.params.id)
     
