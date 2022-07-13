@@ -12,9 +12,11 @@ app.use(bodyParser.urlencoded({extended: true}))
 //Routers
 const baseRoute = "/api/v1/"
 const productsRouter = require("./routes/productRoutes")
-const userRouter = require("./routes/userRoutes")
+const authRoutes = require("./routes/authRoutes")
+const userRoutes = require("./routes/userRoutes")
+app.use(baseRoute, authRoutes)
+app.use(baseRoute, userRoutes)
 app.use(baseRoute, productsRouter)
-app.use(baseRoute, userRouter)
 
 
 //middlewares
