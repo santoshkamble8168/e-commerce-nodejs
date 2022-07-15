@@ -14,9 +14,11 @@ const baseRoute = "/api/v1/"
 const productsRouter = require("./routes/productRoutes")
 const authRoutes = require("./routes/authRoutes")
 const userRoutes = require("./routes/userRoutes")
+const orderRoutes = require("./routes/orderRoutes")
 app.use(baseRoute, authRoutes)
 app.use(baseRoute, userRoutes)
 app.use(baseRoute, productsRouter)
+app.use(baseRoute, orderRoutes)
 
 
 //middlewares

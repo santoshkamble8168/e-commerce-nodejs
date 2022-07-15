@@ -20,8 +20,6 @@ exports.registerUser = handleAsyncErrors( async(req, res, next) => {
 
     sendTokenCookie(user, "User created successfully", 201, res)
 })
-
-
 //forgot password
 exports.forgotPassword = handleAsyncErrors(async(req, res, next) => {
     const user = await User.findOne({email: req.body.email})
@@ -102,8 +100,43 @@ exports.updatePassword = handleAsyncErrors(async (req, res, next) => {
     sendTokenCookie(user, "Password updated successfully", 200, res)
 })
 
-exports.getUsers = handleAsyncErrors(async (req, res, next) => {
+//loggedin user details
+exports.getProfile = handleAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.user.id)
+    res.status(200).json({
+        success: true,
+        item: user
+    })
+})
+
+//update user loggedin
+exports.updateProfile = handleAsyncErrors( async (req, res, next) => {
+    const newUserData = {
+        name: req.body.name,
+        email: req.body.email
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+
+    res.status(200).json({
+        success: true,
+        message: "User updated successfully",
+        item: user
+    })
+})
+
+//get all users
+exports.getAllUsers = handleAsyncErrors( async(req, res, next) => {
     const users = await User.find()
+
+    res.status(200).json({
+        success: true,
+        item: users
+    })
 })
 
 exports.getUserDetails = handleAsyncErrors(async (req, res, next) => {
@@ -118,11 +151,42 @@ exports.getUserDetails = handleAsyncErrors(async (req, res, next) => {
     })
 })
 
-//loggedin user details
-exports.getProfile = handleAsyncErrors(async (req, res, next) => {
-    const user = await User.findById(req.user.id)
+//update user
+exports.updateUser = handleAsyncErrors( async (req, res, next) => {
+    const newUserData = {
+        name: req.body.name,
+        email: req.body.email,
+        role: req.body.role
+    }
+
+    const isUserExist = await User.findById(req.params.id)
+    if (!isUserExist) {
+        return next(new ErrorHander("User not found", 401))
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+
     res.status(200).json({
         success: true,
+        message: "User updated successfully",
         item: user
+    })
+})
+
+exports.deleteUser = handleAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.params.id)
+    if (!user) {
+        return next(new ErrorHander("User not found", 401))
+    }
+
+    const deleteUser = await User.deleteOne({_id: req.params.id})
+
+    res.status(200).json({
+        success: deleteUser.acknowledged,
+        message: "User deleted succesfully"
     })
 })
