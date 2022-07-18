@@ -15,10 +15,12 @@ const productsRouter = require("./routes/productRoutes")
 const authRoutes = require("./routes/authRoutes")
 const userRoutes = require("./routes/userRoutes")
 const orderRoutes = require("./routes/orderRoutes")
+const paymentRoutes = require("./routes/paymentRoutes")
 app.use(baseRoute, authRoutes)
 app.use(baseRoute, userRoutes)
 app.use(baseRoute, productsRouter)
 app.use(baseRoute, orderRoutes)
+app.use(baseRoute, paymentRoutes)
 
 
 //middlewares
